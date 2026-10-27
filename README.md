@@ -4,7 +4,7 @@
 |---|---|
 | **Name** | Sohaib Younas |
 | **Reference** | MATACS-TH-2026-02 |
-| **Time actually spent** | ~XX minutes <!-- update with your real time --> |
+| **Time actually spent** | ~120 minutes |
 
 ## Summary
 
