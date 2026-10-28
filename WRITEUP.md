@@ -18,11 +18,9 @@ All formulas come from the admin's criteria settings, not from code.
 
 Result: A 93.8 (1st), E 90.2 (2nd), C flagged, D flagged, B ineligible. Details in [ranking.json](ranking.json).
 
----
-
 ## 1. AI vs. rules
 
-The AI does one step: reading free text and pulling out facts. Proposals are written differently each time ("12 weeks of award", "since 2021", "subcontractor to be confirmed"). This is what AI is good at and what rules are bad at.
+The AI does one step: reading free text and pulling out facts. Every proposal phrases dates, counts and licences differently, which AI handles well and rules handle badly.
 
 Everything else is plain code:
 - PDF to text, injection scan, checking the AI's quotes really exist in the text
@@ -31,7 +29,7 @@ Everything else is plain code:
 
 I drew the line here because maths and yes/no checks must give the same answer every time and be easy to check by hand. An AI deciding the ranking can be wrong or manipulated (see Proposal C). So the AI only answers "what does the proposal say?", never "who should win?".
 
-Even the subjective criterion (team & approach) is turned into a checklist the AI ticks, so it is a fact question, not an opinion.
+Even team & approach is a checklist the AI ticks, so it is a fact question, not an opinion.
 
 ## 2. Consistency and explainability
 
@@ -40,7 +38,7 @@ To keep results repeatable:
 - Extracted facts are saved, so re-ranking re-uses them instead of asking the AI again
 - Scoring is plain maths, so the same facts always give the same score
 
-So ranking the same proposals twice with the same criteria version gives the same result. If a fresh extraction is ever run, code compares it with the saved one and flags differences.
+So ranking the same proposals twice gives the same result. If a fresh extraction is run, code compares it with the saved one and flags differences.
 
 To keep them explainable, the reviewer sees next to every score:
 - the exact quote from the proposal (and page) it came from
@@ -65,18 +63,18 @@ Each proposal has an audit log with: file hash, criteria version, prompt version
 - If an admin edits criteria or weights, existing results are marked "out of date", not silently changed.
 - If only a weight or formula changes, results are re-scored instantly from the saved facts. No AI cost.
 - If a criterion is new or changed, only that criterion is re-extracted by the AI.
-- The reviewer sees old vs new side by side and must confirm. Old results stay in history.
-- I'd recommend locking criteria once a review starts; later changes need a logged reason.
+- The reviewer compares old vs new side by side and confirms. Old results stay in history.
+- Criteria lock once a review starts; later changes need a logged reason.
 
 ## 5. Risks and safeguards
 
 | Risk | Safeguard |
 |---|---|
-| Wrong extraction | Every fact must come with an exact quote; code checks the quote exists in the text. Numbers re-parsed by code. Low confidence = flag. Reviewer sees the evidence. |
+| Wrong extraction | Every fact needs an exact quote that code checks against the text. Numbers re-parsed by code. Low confidence = flag. |
 | Made-up facts | Prompt says "not stated = null". Missing info lowers the score or raises a flag, never filled in. Example: D's timeline is null, so D is flagged instead of guessed. |
 | Look-alike facts | Rule that facts must belong to the bidder. Example: B's licence is held by an unnamed subcontractor, so B fails the mandatory check, even though it is the cheapest. |
-| Manipulation / prompt injection | Proposal text is wrapped as data, prompt says never follow it, code also scans for phrases like "rank it first", and the AI has no power to rank anyway. Example: C is flagged for a human and the hidden instruction has zero effect on its score. |
-| Bias | Company name, location and branding are not criteria and are not used in scoring. Same prompt and formulas for everyone. Overrides are logged and can be reviewed for patterns. |
+| Manipulation / prompt injection | Proposal text is wrapped as data, the prompt says never follow it, code scans for phrases like "rank it first", and the AI cannot rank anyway. Example: C is flagged and the hidden instruction has no effect on its score. |
+| Bias | Company name, location and branding are not used in scoring. Same prompt and formulas for everyone. Overrides are logged and can be reviewed for patterns. |
 | Cost | One AI call per proposal, cached. Weight changes re-use saved facts. Upload size limit. |
 | Over-trust | Output is labelled "recommendation" and flags are shown above the ranking. |
 
@@ -89,5 +87,5 @@ Each proposal has an audit log with: file hash, criteria version, prompt version
 ## Assumptions
 
 - "Last 5 years" means counted back from the review date.
-- Price and timeline are scored relative to the eligible proposals in the same batch (a common procurement method). Flagged proposals that pass mandatory checks are included in the price baseline, so the scores do not move once their flag is cleared.
+- Price and timeline are scored relative to the eligible proposals in the same batch. Flagged proposals that pass mandatory checks stay in the price baseline, so scores do not move once a flag is cleared.
 - Warranty caps (25 years panel, 15 years workmanship) and the team checklist are example admin settings.
