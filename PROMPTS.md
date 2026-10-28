@@ -1,6 +1,6 @@
 # Prompts
 
-The AI is used for **one job only: reading each proposal and pulling out facts with evidence.**
+The AI is used for one job only: reading each proposal and pulling out facts with evidence.
 It never ranks, never adds up scores and never decides eligibility. Plain code does that (see [WRITEUP.md](WRITEUP.md)).
 
 Settings for every call: `temperature = 0`, JSON output only, one proposal per call.
@@ -85,7 +85,7 @@ Return JSON in this exact shape:
 
 | id | type | what_to_find | value_type |
 |---|---|---|---|
-| `licence` | mandatory | Ontario electrical contractor licence held by the **bidder itself**, with licence number | status |
+| `licence` | mandatory | Ontario electrical contractor licence held by the bidder itself, with licence number | status |
 | `wsib_insurance` | mandatory | WSIB clearance AND at least $5M liability insurance, both confirmed | status |
 | `experience` | weighted | Number of commercial installs of 100 kW or more completed in the last 5 years | count |
 | `price` | weighted | Total all-in price in CAD | money_cad |
@@ -94,13 +94,13 @@ Return JSON in this exact shape:
 | `warranty_work` | weighted | Workmanship warranty length | years |
 | `team_approach` | weighted | Which of these are stated: named project lead, crew size, safety plan, monitoring or progress reporting, roof/structural assessment | checklist |
 
-> Note: for `team_approach` the AI only reports **which items are present** (a yes/no checklist). It does not give a "quality" score out of 15. Code turns the checklist into points. This keeps the subjective criterion repeatable.
+> Note: for `team_approach` the AI only reports which items are present (a yes/no checklist). It does not give a "quality" score out of 15. Code turns the checklist into points. This keeps the subjective criterion repeatable.
 
 ---
 
 ## Prompt 2: Reason line (`reason-v1`, optional)
 
-Used only to turn the final numbers into a plain-English sentence for the reviewer. It receives the **already-calculated** scores, not the proposal, so it cannot change any result.
+Used only to turn the final numbers into a plain-English sentence for the reviewer. It receives the already-calculated scores, not the proposal, so it cannot change any result.
 
 ```
 Write one sentence (max 30 words) explaining why this proposal is in this
